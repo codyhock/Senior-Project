@@ -1,0 +1,29 @@
+\documentclass{article}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+library(RMySQL);
+install.packages("ggplot2")
+library(ggplot2)
+
+con <- dbConnect(MySQL(), user="cody",password="",host="localhost",dbname="NFL")
+
+#sqlTest <-"select week,team1,team2 from scores where team1='Green Bay Packers' and year = 2011";
+sqlTest <-"select * from scores where team1='Green Bay Packers' and year = 2011"
+
+run <- dbGetQuery(con,sqlTest)
+
+
+#plot(sqlTest["team2"],sqlTest["ptsW"])
+
+team <- c(run$team2)
+score <- c(run$ptsW)
+
+
+qplot(team,score)
+
+dbDisconnect(con)
+run
+
+\end{document}

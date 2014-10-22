@@ -49,13 +49,13 @@ for(i in 1:nrow(scoresDF)){
     lossVector <- dbGetQuery(con,paste(paste(paste(paste("select * from stats where team = '",scoresDF[i,4],sep=""),"' and year =",sep=""), scoresDF[i,1])," limit 1"))
     if(length(winVector)>0 & length(lossVector)>0){
         if(scoresDF[i,3] == '@'){
-        res <- cbind(scoreVector,lossVector,winVector)
+            res <- cbind(scoreVector,lossVector,winVector)
         }
         else{
-        res <- cbind(scoreVector,winVector,lossVector)
+            res <- cbind(scoreVector,winVector,lossVector)
         }
         allData <- rbind(allData,res)
-
+        
     }
 }
 
@@ -76,12 +76,29 @@ for(i in 1:nrow(predScoresDF)){
 }
 colnames(allData)[13] <- "Home Team"
 colnames(allData)[45] <- "Away Team"
-save(allData,file = "~/Progs/R/NFL/revisedAllData.RData")
 
 colnames(predAllData)[13] <- "Home Team"
 colnames(predAllData)[45] <- "Away Team"
-save(predAllData,file = "~/Progs/R/NFL/predictionData.RData")
 
+for (i in 45:75){
+    colnames(allData)[i] <- paste(colnames(allData)[i],"_A",sep="")
+    colnames(predAllData)[i] <- paste(colnames(predAllData)[i],"_A",sep="")
+    
+}
+allData <- allData[,-44]
+predAllData <- predAllData[,-44]
+allData <- allData[,-12]
+predAllData <- predAllData[,-12]
+
+for (i in 12:42){
+    colnames(allData)[i] <- paste(colnames(allData)[i],"_H",sep="")
+    colnames(predAllData)[i] <- paste(colnames(predAllData)[i],"_H",sep="")
+    
+}
+#colnames(predAllData)[42] <- paste(colnames(predAllData)[42],"_W",sep="")
+
+save(predAllData,file = "~/Progs/R/NFL/predictionData.RData")
+save(allData,file = "~/Progs/R/NFL/allData.RData")
 dbDisconnect(con)
 
 

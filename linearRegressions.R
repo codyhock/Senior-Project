@@ -271,20 +271,18 @@ Large_model <-
            DefInt_A:TODifference+
            DefRushYG_H:Pts_H+
            DefRushYG_A:Pts_A+
-           PtsAllowed_H+
-           PtsAllowed_A+
-           DefQBRating_H:PtsAllowed_H+
-           DefQBRating_A:PtsAllowed_A+
-           DefQBRating_H:Pts_H+
-           DefQBRating_A:Pts_A+
+           DefQBRating_H:DefPPG_H+
+           DefQBRating_A:DefPPG_A+
+           DefQBRating_H:PPG_H+
+           DefQBRating_A:PPG_A+
            RushYds_H+
            RushYds_A+
            RushTD_H:RushYA_H+
            RushTD_A:RushYA_A+
-           RushYG_H:Pts_H+
-           RushYG_A:Pts_A+
-           RushTD_H:PtsAllowed_A+
-           RushTD_A:PtsAllowed_H
+           RushYG_H:PPG_H+
+           RushYG_A:PPG_A+
+           RushTD_H:DefPPG_A+
+           RushTD_A:DefPPG_H
        ,
        data = allData)
 
@@ -298,12 +296,33 @@ save_plot(predAllData, Large_pred, '~/Progs/R/NFL/LargePrediction.jpg')
 
 sink("~/Progs/R/NFL/LargePrediction.txt")
 summary(Large_pred)
+paste("Teams had the same record: %",round(sameRecord/nrow(predAllData)*100,2),sep="")
+paste("Better record team won:  %",round(betterTeam/nrow(predAllData)*100,2),sep="")
+paste(paste("My Accuracy : ",prediction_accuracy(predAllData,Large_pred)),"%")
 paste("R-squared: ",R_squared(predAllData,Large_pred))
-paste(paste("Accuracy : ",prediction_accuracy(predAllData,Large_pred)),"%")
 sink()
 
 
 
+
+betterTeam <- 0
+sameRecord <- 0
+for(i in 1:nrow(predAllData)){
+    # teams had the same record
+    if(predAllData[i,"W_H"] == predAllData[i,"W_A"]){
+        sameRecord <- sameRecord + 1
+    }
+    # Home Team had the better record and won
+    else if((predAllData[i,"W_H"] > predAllData[i,"W_A"]) && (predAllData[i,"Result"] > 0)){
+        betterTeam <- betterTeam + 1
+    }
+    # Away Team had the better record and won
+    else if((predAllData[i,"W_H"] < predAllData[i,"W_A"]) && (predAllData[i,"Result"] < 0)){
+        betterTeam <- betterTeam + 1
+    }
+}
+343/532
+63/532
 #############################
 #
 #The functions to be called from above, 

@@ -1,0 +1,41 @@
+
+Call:
+lm(formula = Result ~ RushYG_H:DefRushYG_A + RushYG_A:DefRushYG_H + 
+    RushYA_H:DefRushYA_A + RushYA_A:DefRushYA_H + PassYG_H:DefPassYG_A + 
+    PassYG_A:DefPassYG_H + PassInt_H:DefInt_A + PassInt_A:DefInt_H + 
+    PassTD_H:DefPassTD_A + PassTD_A:DefPassTD_H + RushTD_H:DefRushTD_A + 
+    RushTD_A:DefRushTD_H + PtsAllowed_H + PtsAllowed_A + DefRushYG_H:Pts_H + 
+    DefRushYG_A:Pts_A + DefRushYds_A + DefRushYds_H, data = allData)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-39.768  -8.013  -0.031   8.017  43.862 
+
+Coefficients:
+                       Estimate Std. Error t value Pr(>|t|)    
+(Intercept)           4.245e+00  2.928e+00   1.450  0.14720    
+PtsAllowed_H         -3.753e-02  7.360e-03  -5.099 3.61e-07 ***
+PtsAllowed_A          5.160e-02  7.275e-03   7.093 1.62e-12 ***
+DefRushYds_A          4.570e-03  1.625e-03   2.812  0.00495 ** 
+DefRushYds_H         -9.450e-03  1.615e-03  -5.851 5.39e-09 ***
+RushYG_H:DefRushYG_A -1.603e-04  1.729e-04  -0.927  0.35394    
+RushYG_A:DefRushYG_H -1.527e-04  1.725e-04  -0.885  0.37613    
+RushYA_H:DefRushYA_A  1.858e-01  1.736e-01   1.070  0.28464    
+RushYA_A:DefRushYA_H  1.490e-01  1.745e-01   0.854  0.39314    
+PassYG_H:DefPassYG_A -1.325e-05  3.959e-05  -0.335  0.73788    
+PassYG_A:DefPassYG_H -3.007e-05  3.958e-05  -0.760  0.44742    
+PassInt_H:DefInt_A   -2.670e-03  2.136e-03  -1.250  0.21146    
+PassInt_A:DefInt_H    1.639e-03  2.091e-03   0.784  0.43322    
+PassTD_H:DefPassTD_A  3.442e-03  2.279e-03   1.510  0.13113    
+PassTD_A:DefPassTD_H -5.457e-03  2.267e-03  -2.407  0.01615 *  
+RushTD_H:DefRushTD_A  1.034e-02  3.890e-03   2.659  0.00788 ** 
+RushTD_A:DefRushTD_H -6.959e-03  3.903e-03  -1.783  0.07469 .  
+DefRushYG_H:Pts_H     3.939e-04  5.785e-05   6.809 1.18e-11 ***
+DefRushYG_A:Pts_A    -3.039e-04  5.900e-05  -5.151 2.75e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 12.22 on 3130 degrees of freedom
+Multiple R-squared:  0.3243,	Adjusted R-squared:  0.3204 
+F-statistic: 83.44 on 18 and 3130 DF,  p-value: < 2.2e-16
+

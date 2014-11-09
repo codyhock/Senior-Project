@@ -1,0 +1,44 @@
+
+Call:
+lm(formula = Result ~ PPG_H:DefPPG_A + PPG_A:DefPPG_H + TODifference:PassInt_H + 
+    TODifference:PassInt_A + DefInt_H:TODifference + DefInt_A:TODifference + 
+    DefRushYG_H:Pts_H + DefRushYG_A:Pts_A + DefQBRating_H:DefPPG_H + 
+    DefQBRating_A:DefPPG_A + DefQBRating_H:PPG_H + DefQBRating_A:PPG_A + 
+    RushYds_H + RushYds_A + RushTD_H:RushYA_H + RushTD_A:RushYA_A + 
+    RushYG_H:PPG_H + RushYG_A:PPG_A + RushTD_H:DefPPG_A + RushTD_A:DefPPG_H, 
+    data = allData)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-39.474  -7.544  -0.125   7.565  44.631 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)    
+(Intercept)             5.807e+00  4.379e+00   1.326  0.18493    
+RushYds_H              -1.863e-03  2.668e-03  -0.698  0.48515    
+RushYds_A              -1.586e-03  2.698e-03  -0.588  0.55666    
+PPG_H:DefPPG_A          2.574e-02  1.085e-02   2.372  0.01774 *  
+PPG_A:DefPPG_H         -8.350e-03  1.078e-02  -0.775  0.43861    
+TODifference:PassInt_H -8.581e-02  1.922e-02  -4.464 8.33e-06 ***
+TODifference:PassInt_A  1.034e-01  1.917e-02   5.395 7.38e-08 ***
+TODifference:DefInt_H   1.157e-01  1.919e-02   6.030 1.83e-09 ***
+TODifference:DefInt_A  -1.281e-01  1.838e-02  -6.969 3.88e-12 ***
+DefRushYG_H:Pts_H      -8.011e-05  3.946e-05  -2.030  0.04243 *  
+DefRushYG_A:Pts_A      -5.346e-05  3.957e-05  -1.351  0.17688    
+DefPPG_H:DefQBRating_H -3.081e-03  2.099e-03  -1.468  0.14222    
+DefPPG_A:DefQBRating_A  2.927e-03  2.134e-03   1.372  0.17028    
+PPG_H:DefQBRating_H     3.686e-03  2.408e-03   1.531  0.12593    
+PPG_A:DefQBRating_A    -6.429e-03  2.412e-03  -2.666  0.00773 ** 
+RushTD_H:RushYA_H      -3.921e-02  4.604e-02  -0.852  0.39450    
+RushTD_A:RushYA_A       9.559e-02  4.609e-02   2.074  0.03817 *  
+PPG_H:RushYG_H          1.245e-03  2.054e-03   0.606  0.54462    
+PPG_A:RushYG_A          4.973e-04  2.068e-03   0.241  0.80995    
+DefPPG_A:RushTD_H       1.135e-02  9.095e-03   1.248  0.21195    
+DefPPG_H:RushTD_A      -1.941e-02  9.171e-03  -2.117  0.03435 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 11.95 on 3128 degrees of freedom
+Multiple R-squared:  0.3541,	Adjusted R-squared:  0.3499 
+F-statistic: 85.73 on 20 and 3128 DF,  p-value: < 2.2e-16
+

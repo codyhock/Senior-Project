@@ -1,0 +1,4 @@
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-20.350  -1.892   3.401   3.085   7.974  28.110 
+[1] "R-squared:  0.244"
+[1] "Accuracy :  68.8 %"

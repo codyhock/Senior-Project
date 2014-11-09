@@ -1,0 +1,46 @@
+
+Call:
+lm(formula = Result ~ HomeOffTO:Pts_H + AwayOffTO:Pts_A + HomeOffTO:Pts_A + 
+    AwayOffTO:Pts_H + HomeOffTO + AwayOffTO + DefInt_H + DefInt_A + 
+    DefInt_H:Pts_H + DefInt_A:Pts_A + TODifference:PassInt_H + 
+    TODifference:PassInt_A + TODifference:Fmb_H + TODifference:Fmb_A + 
+    TODifference:DefInt_H + TODifference:DefInt_A + PassInt_H:DefInt_A + 
+    PassInt_A:DefInt_H + DefInt_H:AwayOffTO + DefInt_H:HomeOffTO + 
+    Fmb_H:HomeOffTO + Fmb_A:AwayOffTO, data = allData)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-44.527  -7.676  -0.138   7.651  50.102 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)    
+(Intercept)            11.4357830  7.4015429   1.545  0.12243    
+HomeOffTO              -0.5887633  0.2405581  -2.447  0.01444 *  
+AwayOffTO               0.3347347  0.2372888   1.411  0.15844    
+DefInt_H               -0.0658654  0.4755787  -0.138  0.88986    
+DefInt_A               -0.6185673  0.2186769  -2.829  0.00470 ** 
+HomeOffTO:Pts_H         0.0006517  0.0003045   2.140  0.03245 *  
+AwayOffTO:Pts_A        -0.0014050  0.0002791  -5.035 5.05e-07 ***
+HomeOffTO:Pts_A        -0.0004464  0.0003127  -1.427  0.15354    
+Pts_H:AwayOffTO         0.0010174  0.0003180   3.199  0.00139 ** 
+Pts_H:DefInt_H         -0.0003759  0.0006109  -0.615  0.53836    
+Pts_A:DefInt_A          0.0013208  0.0005144   2.568  0.01028 *  
+TODifference:PassInt_H -0.1201027  0.0275921  -4.353 1.39e-05 ***
+TODifference:PassInt_A  0.1314547  0.0266615   4.931 8.63e-07 ***
+TODifference:Fmb_H     -0.0484583  0.0201892  -2.400  0.01644 *  
+TODifference:Fmb_A      0.0508462  0.0205815   2.470  0.01355 *  
+DefInt_H:TODifference   0.1412590  0.0234211   6.031 1.82e-09 ***
+DefInt_A:TODifference  -0.1489245  0.0230665  -6.456 1.24e-10 ***
+DefInt_A:PassInt_H      0.0077574  0.0066896   1.160  0.24630    
+DefInt_H:PassInt_A     -0.0054559  0.0082492  -0.661  0.50842    
+AwayOffTO:DefInt_H     -0.0013048  0.0063901  -0.204  0.83822    
+HomeOffTO:DefInt_H      0.0088697  0.0065304   1.358  0.17449    
+HomeOffTO:Fmb_H         0.0062349  0.0025821   2.415  0.01581 *  
+AwayOffTO:Fmb_A        -0.0025990  0.0029674  -0.876  0.38118    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 12.5 on 3126 degrees of freedom
+Multiple R-squared:  0.2937,	Adjusted R-squared:  0.2888 
+F-statistic:  59.1 on 22 and 3126 DF,  p-value: < 2.2e-16
+

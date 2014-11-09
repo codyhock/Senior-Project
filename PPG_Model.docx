@@ -1,0 +1,25 @@
+
+Call:
+lm(formula = Result ~ PPG_H + PPG_A + DefPPG_H + DefPPG_A + PPG_H:DefPPG_H + 
+    PPG_A:DefPPG_A, data = allData)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-39.183  -8.025  -0.144   7.951  44.973 
+
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)    
+(Intercept)    -7.874899  10.026498  -0.785 0.432273    
+PPG_H           1.104085   0.327915   3.367 0.000769 ***
+PPG_A          -0.676921   0.329099  -2.057 0.039779 *  
+DefPPG_H       -0.778378   0.318430  -2.444 0.014563 *  
+DefPPG_A        1.087098   0.318729   3.411 0.000656 ***
+PPG_H:DefPPG_H -0.005466   0.014777  -0.370 0.711466    
+PPG_A:DefPPG_A -0.006181   0.014773  -0.418 0.675660    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 12.2 on 3142 degrees of freedom
+Multiple R-squared:  0.3237,	Adjusted R-squared:  0.3225 
+F-statistic: 250.7 on 6 and 3142 DF,  p-value: < 2.2e-16
+

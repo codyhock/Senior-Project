@@ -1,0 +1,34 @@
+
+Call:
+lm(formula = Result ~ PassCmp_H:DefPassCmp_A + PassCmp_A:DefPassCmp_H + 
+    PassTD_H:RushTD_H + PassTD_A:RushTD_A + DefQBRating_H + DefQBRating_A + 
+    DefQBRating_H:PtsAllowed_H + DefQBRating_A:PtsAllowed_A + 
+    DefQBRating_H:Pts_H + DefQBRating_A:Pts_A + PassTD_H:Pts_H + 
+    PassTD_A:Pts_A, data = allData)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-40.579  -8.103  -0.136   8.001  45.127 
+
+Coefficients:
+                             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                 2.841e+00  4.598e+00   0.618   0.5368    
+DefQBRating_H              -1.256e-01  7.150e-02  -1.757   0.0791 .  
+DefQBRating_A              -2.750e-02  7.204e-02  -0.382   0.7027    
+PassCmp_H:DefPassCmp_A      2.774e-04  8.856e-04   0.313   0.7541    
+PassCmp_A:DefPassCmp_H      1.203e-03  8.780e-04   1.370   0.1708    
+PassTD_H:RushTD_H           2.360e-03  3.280e-03   0.720   0.4718    
+PassTD_A:RushTD_A          -1.969e-03  3.283e-03  -0.600   0.5487    
+DefQBRating_H:PtsAllowed_H -5.763e-04  7.185e-05  -8.021 1.47e-15 ***
+DefQBRating_A:PtsAllowed_A  6.828e-04  7.236e-05   9.435  < 2e-16 ***
+DefQBRating_H:Pts_H         7.290e-04  1.202e-04   6.064 1.48e-09 ***
+DefQBRating_A:Pts_A        -5.439e-04  1.199e-04  -4.536 5.95e-06 ***
+PassTD_H:Pts_H             -9.336e-05  1.290e-04  -0.724   0.4692    
+PassTD_A:Pts_A             -8.093e-05  1.298e-04  -0.624   0.5329    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 12.24 on 3136 degrees of freedom
+Multiple R-squared:  0.3196,	Adjusted R-squared:  0.317 
+F-statistic: 122.8 on 12 and 3136 DF,  p-value: < 2.2e-16
+

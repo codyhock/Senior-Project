@@ -1,0 +1,23 @@
+
+Call:
+lm(formula = Result ~ FGM_H + FGM_A + FGM_H:Pts_H + FGM_A:Pts_A, 
+    data = allData)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-41.643  -8.521  -0.071   8.475  50.788 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  2.0559892  1.6681748   1.232    0.218    
+FGM_H       -0.8622630  0.0790147 -10.913   <2e-16 ***
+FGM_A        0.7275934  0.0793586   9.168   <2e-16 ***
+FGM_H:Pts_H  0.0029902  0.0001437  20.811   <2e-16 ***
+FGM_A:Pts_A -0.0025390  0.0001447 -17.546   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 13.08 on 3144 degrees of freedom
+Multiple R-squared:  0.2217,	Adjusted R-squared:  0.2208 
+F-statistic:   224 on 4 and 3144 DF,  p-value: < 2.2e-16
+

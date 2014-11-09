@@ -1,0 +1,6 @@
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-25.260  -3.223   3.384   2.864   9.290  30.680 
+[1] "Teams had the same record: %11.84"
+[1] "Better record team won:  %64.47"
+[1] "My Accuracy :  74.06 %"
+[1] "R-squared:  0.3962"

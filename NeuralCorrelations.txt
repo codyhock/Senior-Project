@@ -1,0 +1,5 @@
+[1] "With 1 layer of abstraction:  0.557805939199056"
+[1] "With 2 layers of abstraction:  0.545526416742605"
+[1] "With 3 layers of abstraction:  0.546616357310885"
+[1] "With 4 layers of abstraction:  0.355515202136488"
+[1] "With 5 layers of abstraction:  0.252616088087501"

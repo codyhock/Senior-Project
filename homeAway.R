@@ -122,6 +122,9 @@ model <-
 
 model
 summary(model)
+sink("~/Progs/R/NFL/HomeAwayModel.txt")
+summary(model)
+sink()
 
 yardModel <- lm(Result ~ HomeYards + AwayYards , data = testModel)
 yardModel

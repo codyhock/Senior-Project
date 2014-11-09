@@ -4,8 +4,7 @@ load("~/Progs/R/NFL/predictionData.RData")
 #function call to calculate the turnovers
 #did once, don't need to again
 if(FALSE){
-    add_turnovers(allData)
-    add_turnovers(predAllData)
+    add_turnovers()
 }
 #Home Team wins 57% of the time
 
@@ -331,7 +330,7 @@ for(i in 1:nrow(predAllData)){
 #saving the plots
 #
 #############################
-add_turnovers <- function(df){
+add_turnovers <- function(){
     #acreating null columns to be filled in
     allData$TODifference <- 0
     predAllData$TODifference <- 0
@@ -370,13 +369,13 @@ add_turnovers <- function(df){
 
     #getting the total turnovers committed by each team
     for(i in 1:nrow(allData)){
-        allData[,"HomeOffTO"] <- allData[,"Fmb_H"] + allData[,"PassInt_H"]
-        allData[,"AwayOffTO"] <- allData[,"Fmb_A"] + allData[,"PassInt_A"]
+        allData[i,"HomeOffTO"] <- allData[i,"Fmb_H"] + allData[i,"PassInt_H"]
+        allData[i,"AwayOffTO"] <- allData[i,"Fmb_A"] + allData[i,"PassInt_A"]
     }
     #and now for prediction data frame
     for(i in 1:nrow(predAllData)){
-        predAllData[,"HomeOffTO"] <- predAllData[,"Fmb_H"] + predAllData[,"PassInt_H"]
-        predAllData[,"AwayOffTO"] <- predAllData[,"Fmb_A"] + predAllData[,"PassInt_A"]
+        predAllData[i,"HomeOffTO"] <- predAllData[i,"Fmb_H"] + predAllData[i,"PassInt_H"]
+        predAllData[i,"AwayOffTO"] <- predAllData[i,"Fmb_A"] + predAllData[i,"PassInt_A"]
     }
       
     save(predAllData,file = "~/Progs/R/NFL/predictionData.RData")

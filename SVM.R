@@ -14,6 +14,11 @@ library(kernlab)
 ###################
 #
 #the models for the svm algorithm
+#I ran tests below for adding custom 
+#constraints as well as types. It turns out the best for
+#this type of dataset is to use the
+#defaults, which are: epsilon-regresiion with a cost
+#of 1.
 #
 ###################
 
@@ -38,11 +43,12 @@ svm_vanilladot <- ksvm(Result ~
                        .,
                    data = svm_allData,
                    kernal = "vanilladot")
-
+?ksvm
 svm_rbfdot
 svm_polydot
 svm_tanhdot
 svm_vanilladot
+
 
 ###################
 #
@@ -99,3 +105,61 @@ abline(0,1,col="red")
 abline(v=0,col="blue")
 abline(h=0,col="blue")
 dev.off()
+
+
+######################
+#
+#Testing the values for C
+#higher the C-value (cost of violating constraints),
+#the higher the penalty. So higher C results in narrower 
+#margins.
+#
+########################
+
+
+TEST_polydot <- ksvm(Result ~
+                         .,
+                     data = svm_allData,
+                     C=3,
+                     type="C-svc",
+                     kernal = "polydot")
+TEST_poly_predictiopn <- predict(TEST_polydot,svm_predAllData)
+TEST_poly_agreement <- TEST_poly_predictiopn/abs(TEST_poly_predictiopn) == svm_predAllData$Result/abs(svm_predAllData$Result)
+table(TEST_poly_agreement)
+prop.table(table(TEST_poly_agreement))
+
+#
+
+TEST_vanilla <- ksvm(Result ~
+                         .,
+                     data = svm_allData,
+                     C=15,
+                     kernal = "vanilladot")
+TEST_vanilla_prediction <- predict(TEST_vanilla,svm_predAllData)
+TEST_vanilla_agreement <- TEST_vanilla_prediction/abs(TEST_vanilla_prediction) == svm_predAllData$Result/abs(svm_predAllData$Result)
+table(TEST_vanilla_agreement)
+prop.table(table(TEST_vanilla_agreement))
+
+#
+
+TEST_rfb<- ksvm(Result ~
+                         .,
+                     data = svm_allData,
+                     C=5,
+                     kernal = "rfbdot")
+TEST_rfb_prediction <- predict(TEST_rfb,svm_predAllData)
+TEST_rfb_agreement <- TEST_rfb_prediction/abs(TEST_rfb_prediction) == svm_predAllData$Result/abs(svm_predAllData$Result)
+table(TEST_rfb_agreement)
+prop.table(table(TEST_rfb_agreement))
+
+#
+
+TEST_tanh<- ksvm(Result ~
+                    .,
+                data = svm_allData,
+                C=15,
+                kernal = "tanhdot")
+TEST_tanh_prediction <- predict(TEST_tanh,svm_predAllData)
+TEST_tanh_agreement <- TEST_tanh_prediction/abs(TEST_tanh_prediction) == svm_predAllData$Result/abs(svm_predAllData$Result)
+table(TEST_tanh_agreement)
+prop.table(table(TEST_tanh_agreement))

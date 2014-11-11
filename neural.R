@@ -45,6 +45,39 @@ save(neuralTest,file = "~/Progs/R/NFL/neuralTest.RData")
 
 summary(knn_allData$Result)
 summary(nueralTrain$Result)
+####################################3
+#testing here
+#
+#
+#####################################
+
+if(FALSE){
+    NeuralTraining <- knn_allData
+    NeuralTesting <- knn_predAllData
+    for (i in 1:3){
+        NeuralTraining<-NeuralTraining[-2]
+        NeuralTesting<-NeuralTesting[-2]
+    }
+    NeuralTraining<-NeuralTraining[-9]
+    NeuralTesting<-NeuralTesting[-9]
+    NeuralTraining<-NeuralTraining[-17]
+    NeuralTesting<-NeuralTesting[-17]
+    NeuralTraining<-NeuralTraining[-18]
+    NeuralTesting<-NeuralTesting[-18]
+    NeuralTraining<-NeuralTraining[-19]
+    NeuralTesting<-NeuralTesting[-19]
+}
+TestModel <- neural(1)
+TestModel
+plot(TestModel)
+TestResults <- compute(TestModel,NeuralTesting[-1])
+res <- data.frame(actual=NeuralTesting$Result,predicted=TestResults$net.result)
+res
+##################
+#
+#1
+#
+##################
 
 Neural_Model <- neural(1)
 Neural_Model

@@ -1,5 +1,5 @@
-[1] "Thru week 13 (ended Monday, December 1st)"
-[1] "Total games: 191"
-[1] "Correctly picked: 135"
-[1] "Record:  135 - 56"
-[1] "Accuracy: 70.68 %"
+Thru week 13 (ended Monday, December 1st)
+Total games: 191
+Correctly picked: 135
+Record:  135 - 56
+Accuracy: 70.68 %

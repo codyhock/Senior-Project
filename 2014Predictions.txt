@@ -3,3 +3,6 @@ Total games: 191
 Correctly picked: 135
 Record:  135 - 56
 Accuracy: 70.68 %
+
+Microsoft Cortana Record: 126-66 (gave a win and loss for tie between Bengals and Panthers in week 6)
+Microsoft Cortana Accuracy: 65.63%

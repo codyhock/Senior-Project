@@ -39,7 +39,7 @@ predScoresDF <- home_away_swap(predScoresDF)
 
 ##########
 #
-#make the following 2 loops into a function call
+#combining at proprer locations
 #
 ###########
 

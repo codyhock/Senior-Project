@@ -88,6 +88,10 @@ nextWeekData <-calculateColumns(nextWeekData, 0)
 #
 ########################################################
 
+#making sure the TO margin is correct
+newData2 <- newData
+newData2$TODifference <- (newData2$DefInt_H - newData2$PassInt_H)-(newData2$DefInt_A - newData2$PassInt_A)
+
 model <-
     lm(Result ~
            PPG_H:DefPPG_A+
@@ -111,7 +115,7 @@ model <-
            RushTD_H:DefPPG_A+
            RushTD_A:DefPPG_H
        ,
-       data = newData)
+       data = newData2)
 
 thisYearpred <- predict(model, newPredData)
 nextWeekpred <- predict(model, nextWeekData)

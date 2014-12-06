@@ -1,180 +1,92 @@
+#Cody Hock
+#This R script is for the games being played during week 14 and 15 of the 2014 NFL season.
+#The code here makes a great use of code in other R scripts and it is to show
+#the progress that has been made in this project.
+
+#loading the large data frames that were used in the training and testing sets earlier
 load("~/Progs/R/NFL/allData.RData")
 load("~/Progs/R/NFL/predictionData.RData")
 
+#I am combinding all of the data from 2000-2013 to be used as a training set
+#for this weeks games
 newData <- rbind(allData, predAllData)
+
+#connecting to the MySQL database to get the new data
+library(RMySQL)
+con <- dbConnect(MySQL(), user='cody',password='',host='localhost',dbname='NFL')
 
 #building the test model
 stats <- "select * from stats where year = 2014"
 scores<- "select * from scores where year = 2014"
 
+#running queries
 statsDF <- dbGetQuery(con,stats)
 scoresDF <- dbGetQuery(con, scores)
 
-#first renaming for the test model
+#first renaming for the test model, this function is in groupData.R
 scoresDF <- rename_columns(scoresDF)
 
-#select scores.team1,stats.team from scores right join stats on scores.team1 = stats.team where stats.year = 2000 and scores.year = 2000;
+#getting in order of winning team for the individual games, this function is in groupData.R
 scoresDF <- home_away_swap(scoresDF)
 
-newPredData <-as.data.frame(NULL)
+#getting the data frame with all of the stats for the teams of each game, this function is in groupData.R
+newPredData <- getGameData(scoresDF)
 
-for(i in 1:nrow(scoresDF)){
-    scoreVector <- scoresDF[i,]
-    winVector <- dbGetQuery(con,paste(paste(paste(paste("select * from stats where team = '",scoresDF[i,2],sep=""),"' and year =",sep=""), scoresDF[i,1])," limit 1"))
-    lossVector <- dbGetQuery(con,paste(paste(paste(paste("select * from stats where team = '",scoresDF[i,4],sep=""),"' and year =",sep=""), scoresDF[i,1])," limit 1"))
-    if(length(winVector)>0 & length(lossVector)>0){
-        if(scoresDF[i,3] == '@'){
-            res <- cbind(scoreVector,lossVector,winVector)
-        }
-        else{
-            res <- cbind(scoreVector,winVector,lossVector)
-        }
-        newPredData <- rbind(newPredData,res)
-        
-    }
-}
-colnames(newPredData)[13] <- "Home Team"
-colnames(newPredData)[45] <- "Away Team"
+#renaming teams columns, this function is in groupData.R
+newPredData <-renameTeams(newPredData)
 
-for (i in 45:75){
-    colnames(newPredData)[i] <- paste(colnames(newPredData)[i],"_A",sep="")    
-}
+#this method varies from the one in groupData.R because there is only 1 data frame to edit
+newPredData <-appendAwayWeek(newPredData)
 
-newPredData <- newPredData[,-44]
-newPredData <- newPredData[,-12]
+#removing unused data, this funciton is in groupData.R
+newPredData <-removeUnused(newPredData)
 
-for (i in 12:42){
-    colnames(newPredData)[i] <- paste(colnames(newPredData)[i],"_H",sep="")    
-}
+#this method varies from the one in groupData.R because there is only 1 data frame to edit
+newPredData <-appendHomeWeek(newPredData)
 
-newPredData$TODifference <- 0
-newPredData$HomeOrAway <- 0
-newPredData$HomeOffTO <- 0
-newPredData$AwayOffTO <- 0
-newPredData$PPG_H <- 0
-newPredData$DefPPG_H <- 0
-newPredData$PPG_A <- 0
-newPredData$DefPPG_A <- 0
-newPredData$DifPPG_H <- 0
-newPredData$DifPPG_A <- 0
-newPredData$DifPPG <- 0
-newPredData$DifPPG_H <- 0
+#adding columns to match dimensions of the data frames
+newPredData <-addColumns(newPredData)
 
 #making my 2014 data frame have the same dimensions as the model data frame
-for(i in 1:nrow(newPredData)){
-    #TO difference
-    newPredData[i,"TODifference"] <- newPredData[i,"AwayTO"] - newPredData[i,"HomeTO"]
-    
-    #who won
-    newPredData[i,"HomeOrAway"] <- newPredData[i,"Result"] / abs(newPredData[i,"Result"])
-    
-    #Offensive turnovers
-    newPredData[i,"HomeOffTO"] <- newPredData[i,"Fmb_H"] + newPredData[i,"PassInt_H"]
-    newPredData[i,"AwayOffTO"] <- newPredData[i,"Fmb_A"] + newPredData[i,"PassInt_A"]
-    
-    #adding total games played to divide the total points by to get the points per game stat
-    games <- (newPredData[i,"W_H"]+newPredData[i,"L_H"]+newPredData[i,"T_H"])
-    newPredData[i,"PPG_H"] <- newPredData[i,"Pts_H"]/games
-    newPredData[i,"DefPPG_H"]<- newPredData[i,"PtsAllowed_H"]/games
-        
-    games <- (newPredData[i,"W_A"]+newPredData[i,"L_A"]+newPredData[i,"T_A"])
-    newPredData[i,"PPG_A"] <- newPredData[i,"Pts_A"]/games
-    newPredData[i,"DefPPG_A"]<- newPredData[i,"PtsAllowed_A"]/games
-    
-    #calculating the differnce of the PPG of each teams
-    newPredData[i,"DifPPG_H"] <- newPredData[i,"PPG_H"] - newPredData[i,"DefPPG_H"]
-    newPredData[i,"DifPPG_A"] <- newPredData[i,"PPG_A"] - newPredData[i,"DefPPG_A"]
-    newPredData[i,"DifPPG"] <- newPredData[i,"DifPPG_H"] - newPredData[i,"DifPPG_A"]
-    
-}
-newData$DiffPPG <- NULL
-newPredData$DiffPPG <- NULL
-###################
+newPredData <-calculateColumns(newPredData, 1)
+
+##########################################################
 #
 #now for next weeks games
 #
-###################
+##########################################################
 nextScores <- "select * from scores where year = 2014 and week = 14;"
 nextScoresDF <- dbGetQuery(con, nextScores)
 nextScoresDF <- rename_columns(nextScoresDF)
+
 #don't need home/away swap bc they are all nulled out
-nextWeekData <-as.data.frame(NULL)
-for(i in 1:nrow(nextScoresDF)){
-    scoreVector <- nextScoresDF[i,]
-    winVector <- dbGetQuery(con,paste(paste(paste(paste("select * from stats where team = '",nextScoresDF[i,2],sep=""),"' and year =",sep=""), nextScoresDF[i,1])," limit 1"))
-    lossVector <- dbGetQuery(con,paste(paste(paste(paste("select * from stats where team = '",nextScoresDF[i,4],sep=""),"' and year =",sep=""), nextScoresDF[i,1])," limit 1"))
-    if(length(winVector)>0 & length(lossVector)>0){
-        if(nextScoresDF[i,3] == '@'){
-            res <- cbind(scoreVector,lossVector,winVector)
-        }
-        else{
-            res <- cbind(scoreVector,winVector,lossVector)
-        }
-        nextWeekData <- rbind(nextWeekData,res)
-        
-    }
-}
-colnames(nextWeekData)[13] <- "Home Team"
-colnames(nextWeekData)[45] <- "Away Team"
 
-for (i in 45:75){
-    colnames(nextWeekData)[i] <- paste(colnames(nextWeekData)[i],"_A",sep="")    
-}
+#getting the data frame with all of the stats for the teams of each game, this function is in groupData.R
+nextWeekData <- getGameData(nextScoresDF)
 
-nextWeekData <- nextWeekData[,-44]
-nextWeekData <- nextWeekData[,-12]
+#renaming teams columns, this function is in groupData.R
+nextWeekData <-renameTeams(nextWeekData)
 
-for (i in 12:42){
-    colnames(nextWeekData)[i] <- paste(colnames(nextWeekData)[i],"_H",sep="")    
-}
+#this method varies from the one in groupData.R because there is only 1 data frame to edit
+nextWeekData <-appendAwayWeek(nextWeekData)
 
-nextWeekData$TODifference <- 0
-nextWeekData$HomeOrAway <- 0
-nextWeekData$HomeOffTO <- 0
-nextWeekData$AwayOffTO <- 0
-nextWeekData$PPG_H <- 0
-nextWeekData$DefPPG_H <- 0
-nextWeekData$PPG_A <- 0
-nextWeekData$DefPPG_A <- 0
-nextWeekData$DifPPG_H <- 0
-nextWeekData$DifPPG_A <- 0
-nextWeekData$DifPPG <- 0
-nextWeekData$DifPPG_H <- 0
+#removing unused data, this funciton is in groupData.R
+nextWeekData <-removeUnused(nextWeekData)
+
+#this method varies from the one in groupData.R because there is only 1 data frame to edit
+nextWeekData <-appendHomeWeek(nextWeekData)
+
+#adding columns to match dimensions of the data frames
+nextWeekData <-addColumns(nextWeekData)
 
 #making my 2014 data frame have the same dimensions as the model data frame
-for(i in 1:nrow(nextWeekData)){
-    #TO difference
-    nextWeekData[i,"TODifference"] <- nextWeekData[i,"AwayTO"] - nextWeekData[i,"HomeTO"]
-    
-    #who won
-    #divide by 0
-    #nextWeekData[i,"HomeOrAway"] <- nextWeekData[i,"Result"] / abs(nextWeekData[i,"Result"])
-    
-    #Offensive turnovers
-    nextWeekData[i,"HomeOffTO"] <- nextWeekData[i,"Fmb_H"] + nextWeekData[i,"PassInt_H"]
-    nextWeekData[i,"AwayOffTO"] <- nextWeekData[i,"Fmb_A"] + nextWeekData[i,"PassInt_A"]
-    
-    #adding total games played to divide the total points by to get the points per game stat
-    games <- (nextWeekData[i,"W_H"]+nextWeekData[i,"L_H"]+nextWeekData[i,"T_H"])
-    nextWeekData[i,"PPG_H"] <- nextWeekData[i,"Pts_H"]/games
-    nextWeekData[i,"DefPPG_H"]<- nextWeekData[i,"PtsAllowed_H"]/games
-    
-    games <- (nextWeekData[i,"W_A"]+nextWeekData[i,"L_A"]+nextWeekData[i,"T_A"])
-    nextWeekData[i,"PPG_A"] <- nextWeekData[i,"Pts_A"]/games
-    nextWeekData[i,"DefPPG_A"]<- nextWeekData[i,"PtsAllowed_A"]/games
-    
-    #calculating the differnce of the PPG of each teams
-    nextWeekData[i,"DifPPG_H"] <- nextWeekData[i,"PPG_H"] - nextWeekData[i,"DefPPG_H"]
-    nextWeekData[i,"DifPPG_A"] <- nextWeekData[i,"PPG_A"] - nextWeekData[i,"DefPPG_A"]
-    nextWeekData[i,"DifPPG"] <- nextWeekData[i,"DifPPG_H"] - nextWeekData[i,"DifPPG_A"]
-    
-}
+nextWeekData <-calculateColumns(nextWeekData, 0)
 
-##################
+########################################################
 #
 #Now predicting with the most accurate linear regression from earlier
 #
-##################
+########################################################
 
 model <-
     lm(Result ~
@@ -224,20 +136,75 @@ sink("~/Progs/R/NFL/2014/2014Week14.txt")
 nextWeek
 sink()
 
-
-
-round(1.4)
 nextWeek <- lapply(nextWeekpred,round)
-?lapply
 
 
+###################################################
+#
+#funcitons
+#
+###################################################
+#functions to append _A and _H to correct columns repectively
+appendAwayWeek <- function(dataFrame){
+    for (i in 45:75){
+        colnames(dataFrame)[i] <- paste(colnames(dataFrame)[i],"_A",sep="")    
+    }
+    return(dataFrame)
+}
 
+appendHomeWeek <- function(dataFrame){
+    for (i in 12:42){
+        colnames(dataFrame)[i] <- paste(colnames(dataFrame)[i],"_H",sep="")    
+    }
+    return(dataFrame)
+}
 
+#this function adds the necessary columns that the previous larger dataFrame has
+#this is necessary because the dimensions of the data frame used to model must
+#match exactly with the data frame used to test
+addColumns <- function(dataFrame){
+    dataFrame$TODifference <- 0
+    dataFrame$HomeOrAway <- 0
+    dataFrame$HomeOffTO <- 0
+    dataFrame$AwayOffTO <- 0
+    dataFrame$PPG_H <- 0
+    dataFrame$DefPPG_H <- 0
+    dataFrame$PPG_A <- 0
+    dataFrame$DefPPG_A <- 0
+    dataFrame$DifPPG_H <- 0
+    dataFrame$DifPPG_A <- 0
+    dataFrame$DifPPG <- 0
+    return(dataFrame)
+}
 
+#calculating average points scored as well as total turnovers
+calculateColumns <- function(dataFrame, res){
+    for(i in 1:nrow(dataFrame)){
+        #who won
+        if(res > 0){
+            dataFrame[i,"HomeOrAway"] <- dataFrame[i,"Result"] / abs(dataFrame[i,"Result"])
+        }
+        
+        #Offensive turnovers
+        dataFrame[i,"HomeOffTO"] <- dataFrame[i,"Fmb_H"] + dataFrame[i,"PassInt_H"]
+        dataFrame[i,"AwayOffTO"] <- dataFrame[i,"Fmb_A"] + dataFrame[i,"PassInt_A"]
+        
+        #turnover difference
+        dataFrame[i,"TODifference"] <- dataFrame[i,"HomeTO"] - dataFrame[i,"AwayTO"]
 
-
-
-
-
-
-
+        #adding total games played to divide the total points by to get the points per game stat
+        games <- (dataFrame[i,"W_H"]+dataFrame[i,"L_H"]+dataFrame[i,"T_H"])
+        dataFrame[i,"PPG_H"] <- dataFrame[i,"Pts_H"]/games
+        dataFrame[i,"DefPPG_H"]<- dataFrame[i,"PtsAllowed_H"]/games
+        
+        games <- (dataFrame[i,"W_A"]+dataFrame[i,"L_A"]+dataFrame[i,"T_A"])
+        dataFrame[i,"PPG_A"] <- dataFrame[i,"Pts_A"]/games
+        dataFrame[i,"DefPPG_A"]<- dataFrame[i,"PtsAllowed_A"]/games
+        
+        #calculating the differnce of the PPG of each teams
+        dataFrame[i,"DifPPG_H"] <- dataFrame[i,"PPG_H"] - dataFrame[i,"DefPPG_H"]
+        dataFrame[i,"DifPPG_A"] <- dataFrame[i,"PPG_A"] - dataFrame[i,"DefPPG_A"]
+        dataFrame[i,"DifPPG"] <- dataFrame[i,"DifPPG_H"] - dataFrame[i,"DifPPG_A"]
+    }
+    return(dataFrame)
+}

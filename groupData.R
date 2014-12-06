@@ -1,5 +1,9 @@
-library(RMySQL)
+#Cody Hock
+#This R script is building the training and tesing set's data
+#to be used later on in other scripts.
 
+#making MySQL connection
+library(RMySQL)
 con <- dbConnect(MySQL(), user='cody',password='',host='localhost',dbname='NFL')
 
 #building the test model
@@ -10,6 +14,7 @@ scores<- "select * from scores where year < 2012"
 predStats <- "select * from stats where year > 2011"
 predScores<- "select * from scores where year > 2011"
 
+#running queries
 statsDF <- dbGetQuery(con,stats)
 scoresDF <- dbGetQuery(con, scores)
 scoreResult <-dbGetQuery(con, scores)
@@ -17,8 +22,6 @@ scoreResult <-dbGetQuery(con, scores)
 predStatsDF <- dbGetQuery(con,predStats)
 predScoresDF <- dbGetQuery(con, predScores)
 
-nrow(statsDF)
-nrow(scoresDF)
 
 allData <-as.data.frame(NULL)
 predAllData <-as.data.frame(NULL)
@@ -35,74 +38,37 @@ scoresDF <- home_away_swap(scoresDF)
 #now switching in the prediciton model
 predScoresDF <- home_away_swap(predScoresDF)
 
+#combining stats to teams at proprer locations
+allData <- getGameData(scoresDF)
+predAllData <- getGameData(predScoresDF)
 
+#renaming columns
+allData <- renameTeams(allData)
+predAllData <-renameTeams(predAllData)
 
-##########
-#
-#combining at proprer locations
-#
-###########
+#appending the _A for away teams
+appendAway(allData,predAllData)
 
-for(i in 1:nrow(scoresDF)){
-    scoreVector <- scoresDF[i,]
-    winVector <- dbGetQuery(con,paste(paste(paste(paste("select * from stats where team = '",scoresDF[i,2],sep=""),"' and year =",sep=""), scoresDF[i,1])," limit 1"))
-    lossVector <- dbGetQuery(con,paste(paste(paste(paste("select * from stats where team = '",scoresDF[i,4],sep=""),"' and year =",sep=""), scoresDF[i,1])," limit 1"))
-    if(length(winVector)>0 & length(lossVector)>0){
-        if(scoresDF[i,3] == '@'){
-            res <- cbind(scoreVector,lossVector,winVector)
-        }
-        else{
-            res <- cbind(scoreVector,winVector,lossVector)
-        }
-        allData <- rbind(allData,res)
-        
-    }
-}
+#removing unused data
+allData <-removeUnused(allData)
+predAllData <-removeUnused(predAllData)
 
-for(i in 1:nrow(predScoresDF)){
-    scoreVector <- predScoresDF[i,]
-    winVector <- dbGetQuery(con,paste(paste(paste(paste("select * from stats where team = '",predScoresDF[i,2],sep=""),"' and year =",sep=""), predScoresDF[i,1])," limit 1"))
-    lossVector <- dbGetQuery(con,paste(paste(paste(paste("select * from stats where team = '",predScoresDF[i,4],sep=""),"' and year =",sep=""), predScoresDF[i,1])," limit 1"))
-    if(length(winVector)>0 & length(lossVector)>0){
-        if(predScoresDF[i,3] == '@'){
-            res <- cbind(scoreVector,lossVector,winVector)
-        }
-        else{
-            res <- cbind(scoreVector,winVector,lossVector)
-        }
-        predAllData <- rbind(predAllData,res)
-        
-    }
-}
-colnames(allData)[13] <- "Home Team"
-colnames(allData)[45] <- "Away Team"
+#appending the _H for home teams
+appendHome(allData,predAllDAta)
 
-colnames(predAllData)[13] <- "Home Team"
-colnames(predAllData)[45] <- "Away Team"
-
-for (i in 45:75){
-    colnames(allData)[i] <- paste(colnames(allData)[i],"_A",sep="")
-    colnames(predAllData)[i] <- paste(colnames(predAllData)[i],"_A",sep="")
-    
-}
-allData <- allData[,-44]
-predAllData <- predAllData[,-44]
-allData <- allData[,-12]
-predAllData <- predAllData[,-12]
-
-for (i in 12:42){
-    colnames(allData)[i] <- paste(colnames(allData)[i],"_H",sep="")
-    colnames(predAllData)[i] <- paste(colnames(predAllData)[i],"_H",sep="")
-    
-}
-#colnames(predAllData)[42] <- paste(colnames(predAllData)[42],"_W",sep="")
 
 save(predAllData,file = "~/Progs/R/NFL/predictionData.RData")
 save(allData,file = "~/Progs/R/NFL/allData.RData")
 dbDisconnect(con)
 
 
+##############
+#
+#functions called from above
+#
+##############
 
+#swapping stats of home and away teams to get into proper columns
 home_away_swap <- function(df){
     for (i in 1:nrow(df)){
         #if the away team won flip it
@@ -124,6 +90,7 @@ home_away_swap <- function(df){
     return(df)
 }
 
+#after above swap, rename the columns
 rename_columns <- function(df){
     colnames(df)[8] <- "HomeYards"
     colnames(df)[9] <- "HomeTO"
@@ -133,4 +100,57 @@ rename_columns <- function(df){
     df<-df[,-2]
     return(df)
 }
-sessionInfo()
+
+getGameData <- function(scores){
+    #function to return the data frame
+    #that combines the stats of each team in the 
+    #game into the correct vector
+    #within the new data frame
+    dataFrame <- as.data.frame(NULL)
+    for(i in 1:nrow(scores)){
+        scoreVector <- scores[i,]
+        winVector <- dbGetQuery(con,paste(paste(paste(paste("select * from stats where team = '",scores[i,2],sep=""),"' and year =",sep=""), scores[i,1])," limit 1"))
+        lossVector <- dbGetQuery(con,paste(paste(paste(paste("select * from stats where team = '",scores[i,4],sep=""),"' and year =",sep=""), scores[i,1])," limit 1"))
+        if(length(winVector)>0 & length(lossVector)>0){
+            #putting in order of: game stats, home stats, away stats - regaurdless of which team won
+            if(scores[i,3] == '@'){
+                res <- cbind(scoreVector,lossVector,winVector)
+            }
+            else{
+                res <- cbind(scoreVector,winVector,lossVector)
+            }
+            dataFrame <- rbind(dataFrame,res)
+        }
+    }
+    return(dataFrame)
+}
+
+#renames columns as Home/Away Team instead of Team 1/2
+renameTeams <- function(dataFrame){
+    colnames(dataFrame)[13] <- "Home Team"
+    colnames(dataFrame)[45] <- "Away Team"
+    return(dataFrame)
+}
+
+#appending "_A" for the columns coresponding to the away teams
+appendAway <- function(trainDataFrame, testDataFrame){
+    for (i in 45:75){
+        colnames(trainDataFrame)[i] <- paste(colnames(trainDataFrame)[i],"_A",sep="")
+        colnames(testDataFrame)[i] <- paste(colnames(testDataFrame)[i],"_A",sep="")
+    }
+}
+
+#appending "_H" for the columns coresponding to the home teams
+appendHome <- function(trainDataFrame, testDataFrame){
+    for (i in 12:42){
+        colnames(trainDataFrame)[i] <- paste(colnames(trainDataFrame)[i],"_H",sep="")
+        colnames(testDataFrame)[i] <- paste(colnames(testDataFrame)[i],"_H",sep="")
+    }
+}
+
+#removing unused data from the data frame 
+removeUnused <- function(dataFrame){
+    dataFrame <- dataFrame[,-44]
+    dataFrame <- dataFrame[,-12]
+    return(dataFrame)
+}

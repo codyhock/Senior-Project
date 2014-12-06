@@ -1,3 +1,10 @@
+#Cody Hock
+#This R script is not a part of my final predictions,
+#it is rather just one of the many scripts I wrote to teach myself
+#how R works. I thought I would include one of them in its
+#raw form to show I did write more code in order to learn the language.
+#This is a simple Linear regression for the home and away teams.
+
 library(RMySQL)
 
 con <- dbConnect(MySQL(), user='cody',password='',host='localhost',dbname='NFL')
@@ -158,9 +165,6 @@ save(pred,file="HomeAwayPrediction.RData")
 pred
 
 
-
-
-
 #number of games played is 3186
 #Home team wins = 1826
 #Away team wins = 1360
@@ -178,15 +182,6 @@ pred
 
 
 
-
-
-
-
-
-
-
-
-
 #regression function
 #page 168-171
 #y = b0 + b1x1 + b2x2 +...+ bixi + eps
@@ -200,24 +195,4 @@ reg <- function(mat,y){
     # %*% is matrix multiplication 
     solve (t(mat) %*% mat) %*% t(mat) %*% y
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

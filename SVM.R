@@ -1,3 +1,6 @@
+#Cody Hock
+#The Support Vector Machines R script
+
 #using the same data from the linear regessions and Nearest Neighbors
 load("~/Progs/R/NFL/knn_allData.RData")
 load("~/Progs/R/NFL/knn_predictionData.RData")
@@ -32,7 +35,7 @@ svm_polydot <- ksvm(Result ~
                        .,
                    data = svm_allData,
                    kernal = "polydot")
-?ksvm
+
 #hyperbolic tangentsigmoid
 svm_tanhdot <- ksvm(Result ~
                        .,
@@ -43,12 +46,11 @@ svm_vanilladot <- ksvm(Result ~
                        .,
                    data = svm_allData,
                    kernal = "vanilladot")
-?ksvm
+#printing results of each
 svm_rbfdot
 svm_polydot
 svm_tanhdot
 svm_vanilladot
-
 
 ###################
 #
@@ -86,7 +88,6 @@ vanilladot_agreement <- svm_vanilladot_prediction/abs(svm_vanilladot_prediction)
 table(vanilladot_agreement)
 prop.table(table(vanilladot_agreement))
 
-
 ###################
 #
 #saving data for display
@@ -106,7 +107,6 @@ abline(v=0,col="blue")
 abline(h=0,col="blue")
 dev.off()
 
-
 ######################
 #
 #Testing the values for C
@@ -115,7 +115,6 @@ dev.off()
 #margins.
 #
 ########################
-
 
 TEST_polydot <- ksvm(Result ~
                          .,

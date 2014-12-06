@@ -1,11 +1,14 @@
+#Cody Hock
+#This R script is using Linear Regression on the training 
+#set to produce a prediction for the testing set.
+
+#loading saved data
 load("~/Progs/R/NFL/allData.RData")
 load("~/Progs/R/NFL/predictionData.RData")
 
 #function call to calculate the turnovers
-#did once, don't need to again
-if(FALSE){
-    add_turnovers()
-}
+add_turnovers()
+
 #Home Team wins 57% of the time
 
 ####################
@@ -16,26 +19,26 @@ if(FALSE){
 
 TO_model <-
     lm(Result ~
-             HomeOffTO:Pts_H+
-             AwayOffTO:Pts_A+
-             HomeOffTO:Pts_A+
-             AwayOffTO:Pts_H+
+           HomeOffTO:Pts_H+
+           AwayOffTO:Pts_A+
+           HomeOffTO:Pts_A+
+           AwayOffTO:Pts_H+
            HomeOffTO+
            AwayOffTO+
-             DefInt_H+
-             DefInt_A+
+           DefInt_H+
+           DefInt_A+
            DefInt_H:Pts_H+
            DefInt_A:Pts_A+
-             TODifference:PassInt_H+
-             TODifference:PassInt_A+
+           TODifference:PassInt_H+
+           TODifference:PassInt_A+
            TODifference:Fmb_H+
            TODifference:Fmb_A+
-             TODifference:DefInt_H+
-             TODifference:DefInt_A+
+           TODifference:DefInt_H+
+           TODifference:DefInt_A+
            PassInt_H:DefInt_A+
            PassInt_A:DefInt_H+
-             DefInt_H:AwayOffTO+
-             DefInt_H:HomeOffTO+
+           DefInt_H:AwayOffTO+
+           DefInt_H:HomeOffTO+
            Fmb_H:HomeOffTO+
            Fmb_A:AwayOffTO,    
       data = allData)
@@ -65,20 +68,20 @@ Def_model <-
   lm(Result ~
        RushYG_H:DefRushYG_A+
        RushYG_A:DefRushYG_H+
-         RushYA_H:DefRushYA_A+
-         RushYA_A:DefRushYA_H+
+       RushYA_H:DefRushYA_A+
+       RushYA_A:DefRushYA_H+
        PassYG_H:DefPassYG_A+
        PassYG_A:DefPassYG_H+
-         PassInt_H:DefInt_A+
-         PassInt_A:DefInt_H+
+       PassInt_H:DefInt_A+
+       PassInt_A:DefInt_H+
        PassTD_H:DefPassTD_A+
        PassTD_A:DefPassTD_H+
-         RushTD_H:DefRushTD_A+
-         RushTD_A:DefRushTD_H+
+       RushTD_H:DefRushTD_A+
+       RushTD_A:DefRushTD_H+
        PtsAllowed_H+
        PtsAllowed_A+
-         DefRushYG_H:Pts_H+
-         DefRushYG_A:Pts_A+
+       DefRushYG_H:Pts_H+
+       DefRushYG_A:Pts_A+
        DefRushYds_A+
        DefRushYds_H,
     data = allData)
@@ -108,20 +111,16 @@ QB_model <-
     lm(Result ~
            PassCmp_H:DefPassCmp_A+
            PassCmp_A:DefPassCmp_H+
-             PassTD_H:RushTD_H+
-             PassTD_A:RushTD_A+
-          # PassTD_H:PassInt_H+
-          # PassTD_A:PassInt_A+
-            # PassYG_H:DefPassYG_A+
-            # PassYG_A:DefPassYG_H+
+           PassTD_H:RushTD_H+
+           PassTD_A:RushTD_A+
            DefQBRating_H+
            DefQBRating_A+
-             DefQBRating_H:PtsAllowed_H+
-             DefQBRating_A:PtsAllowed_A+
+           DefQBRating_H:PtsAllowed_H+
+           DefQBRating_A:PtsAllowed_A+
            DefQBRating_H:Pts_H+
            DefQBRating_A:Pts_A+
-             PassTD_H:Pts_H+
-             PassTD_A:Pts_A,
+           PassTD_H:Pts_H+
+           PassTD_A:Pts_A,
          data = allData)
 
 sink("~/Progs/R/NFL/QB_Model.txt")
@@ -149,24 +148,22 @@ Rush_model <-
     lm(Result ~
            RushTD_H:DefRushTD_A+
            RushTD_A:DefRushTD_H+
-             RushYG_H:DefRushYG_A+
-             RushYG_A:DefRushYG_H+
+           RushYG_H:DefRushYG_A+
+           RushYG_A:DefRushYG_H+
            RushYA_H:DefRushYA_A+
            RushYA_A:DefRushYA_H+
-             RushYds_H+
-             RushYds_A+
+           RushYds_H+
+           RushYds_A+
            RushYA_H:RushTD_H+
            RushYA_A:RushTD_A+
-             RushYG_H:Pts_H+
-             RushYG_A:Pts_A+
-          # RushYG_H:PassYG_H+
-          # RushYG_A:PassYG_A+
-             RushYA_H:PassCmp_H+
-             RushYA_A:PassCmp_A+
+           RushYG_H:Pts_H+
+           RushYG_A:Pts_A+
+           RushYA_H:PassCmp_H+
+           RushYA_A:PassCmp_A+
            RushTD_H:PtsAllowed_A+
            RushTD_A:PtsAllowed_H+
-             Fmb_H:HomeOffTO+
-             Fmb_A:AwayOffTO,
+           Fmb_H:HomeOffTO+
+           Fmb_A:AwayOffTO,
          data = allData)
 
 sink("~/Progs/R/NFL/Rush_Model.txt")
@@ -217,11 +214,9 @@ sink()
 ####################
 
 #adding PPG stats to the data frames
-#already done, do not need to do again
-if(FALSE){
-    calc_points(allData)
-    calc_points(predAllData)
-}
+calc_points(allData)
+calc_points(predAllData)
+
 
 PPG_model <-
     lm(Result ~
@@ -231,11 +226,6 @@ PPG_model <-
            DefPPG_A+
            PPG_H:DefPPG_H+
            PPG_A:DefPPG_A
-           #PPG_H:DefPPG_A+
-           #PPG_A:DefPPG_H
-          # DifPPG_H+
-           #DifPPG_A+
-          # DiffPPG
            ,
            data = allData)
 
@@ -303,7 +293,11 @@ sink()
 
 
 
-
+##############
+#
+#calculating how often the better team won
+#
+##############
 betterTeam <- 0
 sameRecord <- 0
 for(i in 1:nrow(predAllData)){
@@ -320,8 +314,7 @@ for(i in 1:nrow(predAllData)){
         betterTeam <- betterTeam + 1
     }
 }
-343/532
-63/532
+
 #############################
 #
 #The functions to be called from above, 
@@ -448,7 +441,6 @@ prediction_accuracy <- function(df, predicion){
         }
     }
     return (round(correct / length(predicion),4) * 100)
-    
 }
 
 save_plot <- function(df, prediction, fileName){

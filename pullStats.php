@@ -7,7 +7,7 @@
 	$end_year   = $argv[2];
 
 	if($start_year < 2000) $start_year = 2000;
-	if($end_year > 2013)   $end_year   = 2013;
+	if($end_year > 2014)   $end_year   = 2014;
 
 	$score_pattern   = "|<td align=\"right\"  csk=\"(\d*)\">.*\n.*\n.*\n.*\n.*<strong><a href=.*\">(\D*\d*\D*)</a>.*\n.*right\" >(@?).*\n.*\">(\D*\d*\D*)</a>.*\n.*<strong>(\d*).*\n.*\" >(\d*).*\n.*\" >(\d*).*\n.*\" >(\d*).*\n.*\" >(\d*).*\n.*\" >(\d*)|";
 	#do I need points when I have it later?
